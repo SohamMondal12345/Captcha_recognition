@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CAPTCHA Solver</title>
+   
+    <style>
+        *{
+    background-image: linear-gradient(to bottom right,rgb(136, 9, 221),rgb(202, 8, 202))
+}
+
+.heading{
+    color: white;
+    background-color: yellow;
+    border: 5px dotted;
+    text-align: center;
+    margin-left: 50px;
+    margin-right: 50px;
+    font-size: 50px;
+    border-radius: 50px;
+    padding: 30px;
+    text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
+}
+
+.detail2{ 
+    color:white;
+    background-image:none ;
+    text-align: center;
+    margin-left: 50px;
+    margin-right: 50px;
+    font-size: 30px;
+    text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
+
+
+    
+}
+
+form{
+    height:8px;
+}
+.subheading{
+    color:white;
+    background-image:none ;
+    text-align: center;
+    margin-left: 50px;
+    margin-right: 50px;
+    font-size: 30px;
+    text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
+    border:2px solid white;
+    margin-left: 500px;
+    margin-right: 500px;
+
+}
+
+.imagepart{
+    border:2px solid white;
+    background-image: none;
+    text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
+    margin-left: 80px;
+    margin-right: 80px;
+    height:230px;
+}
+
+.container{
+    display:flex;
+    margin:50px;
+    justify-content: center;
+    align-items: center;
+    background-image: none;
+}
+
+.preview1{
+    background-image: none;
+    color: white;
+    text-align: center;
+    text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
+}
+
+button{
+    height:25px;
+    width:100px;
+    color:aliceblue;
+    background-color: rgb(77, 10, 107);
+    background-image: none;
+    border-radius: 50px;
+}
+
+button:active{
+    opacity: 0.7;
+}
+
+input{
+    color:aliceblue;
+    background-color: rgb(77, 10, 107);
+    background-image: none;
+    width:180px;
+}
+
+#preview-img{
+    max-width: 200%;
+    height: 100px; 
+    display:none;
+}
+#result{
+  
+    background-image: none;
+   
+}
+
+.final{
+    color:aliceblue;
+    background-color: rgb(77, 10, 107);
+    text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
+    background-image: none;
+    font-size: 30px;
+    text-align: center;
+    border:2px solid white;
+    margin:20px;
+    padding:20px;
+}
+    </style>
+</head>
+<body>
+    <h1 class="heading">CRACKCAP </h1>
+    <h2 class="detail2">Solve a captcha in an instant!</h2>
+    
+    <h2 class="subheading" align="center">Upload a Captcha Image</h2>
+    <div class="imagepart">
+    <form align="center" id="upload-form" action="/upload" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" accept="image/*" onchange="previewFile()">
+        <button type="submit">Upload</button>
+    </form>
+    <div class="container">
+    <div id="preview">
+        <h2 class="preview1" >Image Preview</h2>
+        <img id="preview-img" src="" alt="Image Preview">
+    </div>
+</div>
+</div>
+ 
+    <div id="result"></div>
+    <script>
+        function previewFile() {
+            const preview = document.getElementById('preview-img');
+            const file = document.querySelector('input[type=file]').files[0];
+            const reader = new FileReader();
+
+            reader.addEventListener('load', function () {
+                // Convert the file to base64 string and display it
+                preview.src = reader.result;
+                preview.style.display = 'block';
+            }, false);
+
+            if (file) {
+                reader.readAsDataURL(file);
+            }
+        }
+
+        document.getElementById('upload-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+            fetch('/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('result').innerHTML = '<h3 class="final">Captcha Text: ' + data.captcha_text + '</h3>';
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
+</body>
+</html>
